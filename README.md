@@ -9,62 +9,46 @@ This is just a simple wine launcher. The limitations are listed below:
 
 ## How to install into Archlinux
 
-### 1. Download the ZIP file
-Click the '<> Code' button. Once you click, find the text "Download ZIP". Click it
-
-### 2. Download the needed packages
-If you didn't install `wine` or `gamemode` or `unzip` yet, follow these steps below
-
-Wine:
-```bash
-sudo pacman -S wine
-```
-
-GameMode:
-```bash
-sudo pacman -S gamemode
-```
-
-Unzip:
-```bash
-sudo pacman -S unzip
-```
-
-### 3. Set LiCus as CLI tool
-Navigate to your `LiCus-main.zip`. Usually, it will be in your `Downloads`.
+### 1. Install Dependencies
+If you didn't already install `wine` or `gamemode` or `git`, install them first since LiCus will be using them
 
 ```bash
-cd Downloads
+sudo pacman -S git wine gamemode
 ```
 
-Unzip it
+### 2. Clone this Repository
+To install this CLI tool, we can use git for smoother installation.
 
 ```bash
-unzip LiCus-main.zip
+git clone https://github.com/unloaded-script/LiCus.git
 ```
 
-Now, you will see a folder called `LiCus-main`. Navigate to it.
+And then navigate into `LiCus`
 
 ```bash
-cd LiCus-main
+cd LiCus
 ```
 
-We will make `main.py` executable.
+### 3. Turn this script into CLI tool
+And here's the part where this simple script tool become simple launcher.
 
 ```bash
 chmod +x main.py
 ```
 
-Then, we will move the script into `/usr/local/bin` to turn this simple script into CLI tool
+Then, we will move the `main.py` into `usr/local/bin`
 
 ```bash
 sudo ln -s main.py /usr/local/bin/licus
 ```
 
-And there you have it, your own LiCus inside your Arch. Type
+And that's it, your own LiCus inside your own Arch.
+
+### 4. How to use
+Simply, just type in your terminal
 
 ```bash
 licus
 ```
 
-to activate it.
+And the title screen will appear.
