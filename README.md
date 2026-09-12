@@ -15,6 +15,13 @@ If you didn't already install `wine` or `gamemode` or `git`, install them first 
 ```bash
 sudo pacman -S git wine gamemode
 ```
+**IMPORTANT**
+To run LiCus smoothly, it needs two external python libraries.
+
+```bash
+sudo pacman -S python-rich
+yay -S python-pynput
+```
 
 ### 2. Clone this Repository
 To install this CLI tool, we can use git for smoother installation.
