@@ -9,7 +9,16 @@ This is just a simple wine launcher. The limitations are listed below:
 
 ## How to install into Archlinux
 
-### 1. Install Dependencies
+### 1. Clone this Repository
+To install this CLI tool, we can use git for smoother installation
+
+And then navigate into `LiCus`
+
+```bash
+cd LiCus
+```
+
+### 2. Install Dependencies
 We need dependencies for LiCus to work:
 
 ```bash
@@ -26,19 +35,6 @@ Python libraries installation:
 ```bash
 sudo pacman -S python-rich
 yay -S python-pynput
-```
-
-### 2. Clone this Repository
-To install this CLI tool, we can use git for smoother installation.
-
-```bash
-git clone https://github.com/unloaded-script/LiCus.git
-```
-
-And then navigate into `LiCus`
-
-```bash
-cd LiCus
 ```
 
 ### 3. Turn this script into CLI tool
