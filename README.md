@@ -10,13 +10,18 @@ This is just a simple wine launcher. The limitations are listed below:
 ## How to install into Archlinux
 
 ### 1. Install Dependencies
-If you didn't already install `wine` or `gamemode` or `git`, install them first since LiCus will be using them
+We need dependencies for LiCus to work:
+
+```bash
+bash dependencies_intall.sh
+```
+
+If the above steps might not work, install `wine`, `gamemode`, `git`, and the needed Python libraries manually
 
 ```bash
 sudo pacman -S git wine gamemode
 ```
-**IMPORTANT**
-To run LiCus smoothly, it needs two external python libraries.
+Python libraries installation:
 
 ```bash
 sudo pacman -S python-rich
