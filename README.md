@@ -12,13 +12,8 @@ This is just a simple wine launcher. The limitations are listed below:
 ### 1. Clone this Repository
 To install this CLI tool, we can use git for smoother installation
 
-### 2. Clone this Repository
-To install this CLI tool, we can use git for smoother installation
-
-And then navigate into `LiCus`
-
 ```bash
-cd LiCus
+git clone https://github.com/unloaded-script/LiCus.git
 ```
 
 And then navigate into `LiCus`
