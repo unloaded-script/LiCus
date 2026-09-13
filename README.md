@@ -64,3 +64,10 @@ licus
 ```
 
 And the title screen will appear.
+
+### 5. How to update
+Easily, if the LiCus terminal shows any latest update, run this
+
+```bash
+cd ~/LiCus && git pull
+```
