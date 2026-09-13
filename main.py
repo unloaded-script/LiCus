@@ -39,7 +39,7 @@ def check_for_update():
         latest = response.json()["tag_name"]
         if latest != CURRENT_VERSION:
             print(f"[bold yellow]Update available: {latest} LiCus[/bold yellow] (You're currently using {CURRENT_VERSION} LiCus)")
-            print(f"[bold] You can get it at: https://github.com/unloaded-script/LiCus/releases[/bold]")
+            print(f"[bold]Exit LiCus and run this to update:[/bold] cd ~/LiCus && git pull")
     except Exception:
         pass
 
