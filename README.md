@@ -46,7 +46,7 @@ chmod +x main.py
 Then, we will move the `main.py` into `usr/local/bin`
 
 ```bash
-sudo ln -s ~/Licus/main.py /usr/local/bin/licus
+sudo ln -s ~/LiCus/main.py /usr/local/bin/licus
 ```
 
 And that's it, your own LiCus inside your own Arch.
