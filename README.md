@@ -2,6 +2,11 @@
 # LiCus
 ## A small and low-end compatible wine launcher.
 
+<p align="center">
+  <img src="assets/banner.png" alt="LiCus Banner" width="300">
+  <img src="assets/logo.png" alt="LiCus Banner" width="131">
+</p>
+
 This is just a simple wine launcher. The limitations are listed below:
 - Cannot handle big games.
 - No Wine's errors handling
@@ -84,3 +89,8 @@ Then
 ```bash
 chmod +x main.py && sudo rm -f /usr/local/bin/licus && sudo ln -s ~/LiCus/main.py /usr/local/bin/licus
 ```
+
+<p align="center">
+  <img src="assets/logo.png" alt="LiCus Banner" width="131">
+  <img src="assets/banner.png" alt="LiCus Banner" width="300">
+</p>
