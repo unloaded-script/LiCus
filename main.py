@@ -65,6 +65,7 @@ try:
     with recentjson_file.open("r") as file:
         data = json.load(file)
 except FileNotFoundError:
+    data = data_template
     with recentjson_file.open("w") as file:
         json.dump(data_template, file, indent=4)
     
