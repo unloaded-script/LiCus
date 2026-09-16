@@ -2,12 +2,10 @@
 # LiCus
 ## A small and low-end compatible wine launcher.
 
-```{css, echo=FALSE}
-#header {
-  background: Banner.jpg;
-  padding: .5em;
-}
-```
+<p align="center">
+  <img src="banner.png" alt="LiCus Banner" width="300">
+  <img src="logo.png" alt="LiCus Banner" width="131">
+</p>
 
 This is just a simple wine launcher. The limitations are listed below:
 - Cannot handle big games.
@@ -91,3 +89,8 @@ Then
 ```bash
 chmod +x main.py && sudo rm -f /usr/local/bin/licus && sudo ln -s ~/LiCus/main.py /usr/local/bin/licus
 ```
+
+<p align="center">
+  <img src="logo.png" alt="LiCus Banner" width="131">
+  <img src="banner.png" alt="LiCus Banner" width="300">
+</p>
