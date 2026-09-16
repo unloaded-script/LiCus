@@ -2,6 +2,13 @@
 # LiCus
 ## A small and low-end compatible wine launcher.
 
+```{css, echo=FALSE}
+#header {
+  background: Banner.jpg;
+  padding: .5em;
+}
+```
+
 This is just a simple wine launcher. The limitations are listed below:
 - Cannot handle big games.
 - No Wine's errors handling
