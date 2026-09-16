@@ -71,3 +71,16 @@ Easily, if the LiCus terminal shows any latest update, run this
 ```bash
 cd ~/LiCus && git pull
 ```
+
+If you faced an error, you can run this<br>
+**(This does not mean all error can be solve using this. Please state your error in commit.)**
+
+```bash
+git reset --hard HEAD && git pull
+```
+
+Then
+
+```bash
+chmod +x main.py && sudo rm -f /usr/local/bin/licus && sudo ln -s ~/LiCus/main.py /usr/local/bin/licus
+```
