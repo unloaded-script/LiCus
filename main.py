@@ -26,6 +26,12 @@ CURRENT_VERSION = "v0.2.0"
 
 console = Console()
 
+config_home = Path(os.environ.get("XDG_CONFIG_HOME", Path.home() / ".config"))
+config_dir = config_home / "licus"
+
+recentjson_file = config_dir / "recent_exe.json"
+config_dir.mkdir(parents=True, exist_ok=True)
+
 def padToCenter(l:list,w:int)->str:
     """Manual centering"""
     padding =  ' '*(w//2) # a 1 char line would need at most w/2 spaces in front
@@ -48,8 +54,21 @@ def check_for_update():
     except Exception:
         pass
 
-with open("recent_exe.json", "r") as file:
-    data = json.load(file)
+data_template = {
+    "recent_games": [
+    ]
+}
+
+passed = True
+
+try:
+    with recentjson_file.open("r") as file:
+        data = json.load(file)
+except FileNotFoundError:
+    with recentjson_file.open("w") as file:
+        json.dump(data_template, file, indent=4)
+    
+    passed = False
 
 def kill_wine():
     print("Terminating...")
@@ -73,19 +92,21 @@ def launch(file_dir):
 def startup():
     os.system('clear')
     title = """ 
-    [bold green]   
+    [red]
     ██╗     ██╗ ██████╗██╗   ██╗███████╗
     ██║     ██║██╔════╝██║   ██║██╔════╝
     ██║     ██║██║     ██║   ██║███████╗
     ██║     ██║██║     ██║   ██║╚════██║
     ███████╗██║╚██████╗╚██████╔╝███████║
     ╚══════╝╚═╝ ╚═════╝ ╚═════╝ ╚══════╝
-    [/bold green]                              
+    [/red]
     """
     console.print(title, justify="center")
     console.print("[bold green]Copyright (c) 2026 [Redacted][/bold green]", justify="center")
     check_for_update()
 
+    if passed == False:
+        console.print("[bold yellow](Recent Data not found! Creating a new one...)[/bold yellow]", justify="center")
     console.print("[bold]An Arch Linux Custom Game Launcher. Made by Redacted.[/bold]", justify="center")
     console.print("Type 'help' for guides.", justify="center")
 
@@ -230,7 +251,7 @@ def startup():
         data["recent_games"].insert(0, file_dir)
         data["recent_games"] = data["recent_games"][:5]
 
-        with open("recent_exe.json", "w") as file:
+        with recentjson_file.open("w") as file:
             json.dump(data, file, indent=4)
     
         launch(file_dir)
