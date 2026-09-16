@@ -13,13 +13,18 @@ from pynput import keyboard
 from rich import print
 from rich.prompt import Prompt
 from rich.progress import track
+from rich.console import Console
+from rich.panel import Panel
+from rich.padding import Padding
 
 # data_dir = Path("../../..")
 
 # array1 = os.listdir(data_dir)
 # print(array1)
 
-CURRENT_VERSION = "v0.1.0"
+CURRENT_VERSION = "v0.2.0"
+
+console = Console()
 
 def padToCenter(l:list,w:int)->str:
     """Manual centering"""
@@ -43,6 +48,28 @@ def check_for_update():
     except Exception:
         pass
 
+with open("recent_exe.json", "r") as file:
+    data = json.load(file)
+
+def kill_wine():
+    print("Terminating...")
+    subprocess.run(["wineserver", "-k"])
+    return False
+
+hotkeys = keyboard.GlobalHotKeys({
+    '<alt>+<shift>+x': kill_wine
+})
+
+def launch(file_dir):
+    wine_process = subprocess.Popen(["gamemoderun", "wine", file_dir])
+
+    hotkeys.start()
+
+    try:
+        wine_process.wait()
+    finally:
+        hotkeys.stop()
+
 def startup():
     os.system('clear')
     title = """ 
@@ -55,27 +82,34 @@ def startup():
     ╚══════╝╚═╝ ╚═════╝ ╚═════╝ ╚══════╝
     [/bold green]                              
     """
-    print(padToCenter(title.splitlines(),60))
-    print(padToCenter("[bold green]Copyright (c) 2026 [Redacted][/bold green]".splitlines(), 90))
+    console.print(title, justify="center")
+    console.print("[bold green]Copyright (c) 2026 [Redacted][/bold green]", justify="center")
     check_for_update()
 
-    print(padToCenter("[bold]An Arch Linux Custom Game Launcher. Made by Redacted.[/bold]".splitlines(), 38))
-    print(padToCenter("Type 'help' for guides.".splitlines(), 60))
+    console.print("[bold]An Arch Linux Custom Game Launcher. Made by Redacted.[/bold]", justify="center")
+    console.print("Type 'help' for guides.", justify="center")
 
-    input = Prompt.ask("\n[bold]Enter your game file's directory[/bold]")
-    if input.lower() == "exit":
+    user_input = input("̢»   ")
+    if user_input.lower() == "exit":
         print("[bold]Terminating...[/bold]")
         sys.exit()
-    elif input.lower() == "help":
+    elif user_input.lower() == "help":
 
         instructions = """
-        -      Type [bold red]exit[/bold red] to terminate LiCus    -
-        -      [bold]Drag[/bold] your file into the prompt          -
-        -      OR [bold]type[/bold] your directory into the prompt  -
-        -      Press 'ALT + SHIFT + X' to force exit the games      -
+        ::  Type [bold red]exit[/bold red] to terminate LiCus
+        ::  Type [bold green]recent[/bold green] to open recent games
+
+        ::  [bold]Drag[/bold] your file into the prompt
+        ::  OR [bold]type[/bold] your directory into the prompt
+        ::  Press [bold]'ALT + SHIFT + X'[/bold] to force exit the games
         """
 
-        print(padToCenter(instructions.splitlines(), 35))
+        console.print(Panel(
+            Padding(instructions, (0, 7, 0, 0)),
+            title="LiCus's Help Guide",
+            expand=False,
+            subtitle_align="right"
+        ), justify="center")
     
         count = 9
         while count > 0:
@@ -87,49 +121,118 @@ def startup():
     
             time.sleep(1)
         startup()
-    return input
-
-def kill_wine():
-    print("Terminating...")
-    subprocess.run(["wineserver", "-k"])
-    return False
-
-hotkeys = keyboard.GlobalHotKeys({
-    '<alt>+<shift>+x': kill_wine
-})
-
-input = startup()
-
-file_dir = os.path.expanduser(input)
-file_dir = file_dir.strip("'\"")
-
-programs = ["wine", "gamemoderun"]
-
-game_exe = Path(file_dir).expanduser()
-if not game_exe.name.endswith(".exe"):
-        print("[bold red]Your file is not a valid .exe files![/bold red]")
-        sys.exit()
-
-loading_desc = f"[bold green]Checking {game_exe.name}'s validity and packages...[/bold green]"
-need_exit = False
-for item in track(range(1), description=loading_desc):
-
-    for program in programs:
-        if shutil.which(program):
-            print(f"[bold]{program} installed [/bold]")
+    
+    elif user_input.lower() == "recent":
+        parent = data["recent_games"]
+        index = 0
+        for game in parent:
+            print(f"\n[bold green]{index + 1}[/bold green]. [bold]{game}[/bold]")
+            index += 1
+        
+        try:
+            choice = int(Prompt.ask("\n[bold]Enter the game's number [/bold][bold green][1 - 5][/bold green]"))
+        except ValueError:
+            print("[bold red]Your choice is invalid![/bold red]")
+            time.sleep(1)
+            startup()
+        
+        if not isinstance(choice, int):
+            print("[bold red]Your choice is invalid![/bold red]")
+            time.sleep(1)
+            startup()
         else:
-            print(f"[bold red]{program} not installed yet[/bold red]")
-            need_exit = True
+            try:
+                print(f"\nGame Selected:{data["recent_games"][choice - 1]}")
+            except IndexError:
+                print("[bold red]Your choice is invalid![/bold red]")
+                time.sleep(1)
+                startup()
+        
+            file_dir = os.path.expanduser(data["recent_games"][choice - 1])
+            file_dir = file_dir.strip("'\"")
 
-if need_exit == True:
-    kill_wine()
+            programs = ["wine", "gamemoderun"]
 
-print(f"\nLaunching {game_exe.name}...")
-wine_process = subprocess.Popen(["gamemoderun", "wine", file_dir])
+            game_exe = Path(file_dir).expanduser()
+            if not game_exe.name.endswith(".exe"):
+                    print("[bold red]Your file is not a valid .exe files![/bold red]")
+                    time.sleep(1)
+                    startup()
 
-hotkeys.start()
+            loading_desc = f"[bold green]Checking {game_exe.name}'s validity and packages...[/bold green]"
+            need_exit = False
+            for item in track(range(1), description=loading_desc):
 
-try:
-    wine_process.wait()
-finally:
-    hotkeys.stop()
+                for program in programs:
+                    if shutil.which(program):
+                        print(f"[bold]{program} installed [/bold]")
+                    else:
+                        print(f"[bold red]{program} not installed yet[/bold red]")
+                        need_exit = True
+    
+                with open(game_exe, "rb") as file:
+                    load_data = file.read(64)
+    
+                if (load_data[:2] == b"MZ") == False:
+                    print("[bold red]Your file is not a valid .exe files![/bold red]")
+                    need_exit = True
+    
+                time.sleep(1)
+
+            if need_exit == True:
+                startup()
+
+            print(f"\nLaunching {game_exe.name}...")
+            data["recent_games"].insert(0, file_dir)
+            data["recent_games"] = data["recent_games"][:5]
+
+            with open("recent_exe.json", "w") as file:
+                json.dump(data, file, indent=4)
+    
+            launch(file_dir)
+    
+    else:
+        file_dir = os.path.expanduser(user_input)
+        file_dir = file_dir.strip("'\"")
+
+        programs = ["wine", "gamemoderun"]
+
+        game_exe = Path(file_dir).expanduser()
+        if not game_exe.name.endswith(".exe"):
+                print("[bold red]Your file is not a valid .exe files![/bold red]")
+                time.sleep(1)
+                startup()
+
+        loading_desc = f"[bold green]Checking {game_exe.name}'s validity and packages...[/bold green]"
+        need_exit = False
+        for item in track(range(1), description=loading_desc):
+
+            for program in programs:
+                if shutil.which(program):
+                    print(f"[bold]{program} installed [/bold]")
+                else:
+                    print(f"[bold red]{program} not installed yet[/bold red]")
+                    need_exit = True
+    
+            with open(game_exe, "rb") as file:
+                load_data = file.read(64)
+    
+            if (load_data[:2] == b"MZ") == False:
+                print("[bold red]Your file is not a valid .exe files![/bold red]")
+                need_exit = True
+    
+            time.sleep(1)
+
+        if need_exit == True:
+            startup()
+
+        print(f"\nLaunching {game_exe.name}...")
+        data["recent_games"].insert(0, file_dir)
+        data["recent_games"] = data["recent_games"][:5]
+
+        with open("recent_exe.json", "w") as file:
+            json.dump(data, file, indent=4)
+    
+        launch(file_dir)
+
+user_input = startup()
