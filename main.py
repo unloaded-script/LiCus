@@ -65,7 +65,6 @@ try:
     with recentjson_file.open("r") as file:
         data = json.load(file)
 except FileNotFoundError:
-    data = data_template
     with recentjson_file.open("w") as file:
         json.dump(data_template, file, indent=4)
     
@@ -90,7 +89,7 @@ def launch(file_dir):
     finally:
         hotkeys.stop()
 
-def startup():
+while True:
     os.system('clear')
     title = """ 
     [red]
@@ -142,7 +141,7 @@ def startup():
             sys.stdout.flush()
     
             time.sleep(1)
-        startup()
+        continue
     
     elif user_input.lower() == "recent":
         parent = data["recent_games"]
@@ -156,19 +155,19 @@ def startup():
         except ValueError:
             print("[bold red]Your choice is invalid![/bold red]")
             time.sleep(1)
-            startup()
+            continue
         
         if not isinstance(choice, int):
             print("[bold red]Your choice is invalid![/bold red]")
             time.sleep(1)
-            startup()
+            continue
         else:
             try:
                 print(f"\nGame Selected:{data["recent_games"][choice - 1]}")
             except IndexError:
                 print("[bold red]Your choice is invalid![/bold red]")
                 time.sleep(1)
-                startup()
+                continue
         
             file_dir = os.path.expanduser(data["recent_games"][choice - 1])
             file_dir = file_dir.strip("'\"")
@@ -179,7 +178,7 @@ def startup():
             if not game_exe.name.endswith(".exe"):
                     print("[bold red]Your file is not a valid .exe files![/bold red]")
                     time.sleep(1)
-                    startup()
+                    continue
 
             loading_desc = f"[bold green]Checking {game_exe.name}'s validity and packages...[/bold green]"
             need_exit = False
@@ -192,17 +191,29 @@ def startup():
                         print(f"[bold red]{program} not installed yet[/bold red]")
                         need_exit = True
     
-                with open(game_exe, "rb") as file:
-                    load_data = file.read(64)
-    
-                if (load_data[:2] == b"MZ") == False:
+                try:
+                    with open(game_exe, "rb") as file:
+                        load_data = file.read(64)
+                except FileNotFoundError:
                     print("[bold red]Your file is not a valid .exe files![/bold red]")
+                    time.sleep(1)
                     need_exit = True
     
-                time.sleep(1)
+                try:
+                    if (load_data[:2] == b"MZ") == False:
+                        print("[bold red]Your file is not a valid .exe files![/bold red]")
+                        need_exit = True
+                except NameError:
+                    print("[bold red]Your file is not a valid .exe files![/bold red]")
+                    time.sleep(1)
+                    continue
+    
+            time.sleep(1)
 
             if need_exit == True:
-                startup()
+                print("[bold yellow]Cancelling...[/bold yellow]")
+                time.sleep(1)
+                continue
 
             print(f"\nLaunching {game_exe.name}...")
             data["recent_games"].insert(0, file_dir)
@@ -223,7 +234,7 @@ def startup():
         if not game_exe.name.endswith(".exe"):
                 print("[bold red]Your file is not a valid .exe files![/bold red]")
                 time.sleep(1)
-                startup()
+                continue
 
         loading_desc = f"[bold green]Checking {game_exe.name}'s validity and packages...[/bold green]"
         need_exit = False
@@ -236,17 +247,29 @@ def startup():
                     print(f"[bold red]{program} not installed yet[/bold red]")
                     need_exit = True
     
-            with open(game_exe, "rb") as file:
-                load_data = file.read(64)
-    
-            if (load_data[:2] == b"MZ") == False:
+            try:
+                with open(game_exe, "rb") as file:
+                    load_data = file.read(64)
+            except FileNotFoundError:
                 print("[bold red]Your file is not a valid .exe files![/bold red]")
+                time.sleep(1)
                 need_exit = True
+    
+            try:
+                if (load_data[:2] == b"MZ") == False:
+                    print("[bold red]Your file is not a valid .exe files![/bold red]")
+                    need_exit = True
+            except NameError:
+                print("[bold red]Your file is not a valid .exe files![/bold red]")
+                time.sleep(1)
+                continue
     
             time.sleep(1)
 
         if need_exit == True:
-            startup()
+            print("[bold yellow]Cancelling...[/bold yellow]")
+            time.sleep(1)
+            continue
 
         print(f"\nLaunching {game_exe.name}...")
         data["recent_games"].insert(0, file_dir)
@@ -256,5 +279,3 @@ def startup():
             json.dump(data, file, indent=4)
     
         launch(file_dir)
-
-user_input = startup()
